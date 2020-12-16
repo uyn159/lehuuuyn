@@ -1,0 +1,78 @@
+﻿@model List<Model.EF.Category>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section header{
+    Danh sách thể loại tin tức
+}
+@section jsFooter{
+
+    <script src="~/Assets/admin/js/controller/categoryController.js"></script><!--nhúng vào file index-->
+}
+<!-- Page Heading -->
+<h1 class="h3 mb-2 text-gray-800">Tables</h1>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Bảng danh sách</h6>
+        
+    </div>
+
+    <div class="card-body">
+        @using (Html.BeginForm("Index", "Slide", FormMethod.Get))
+        {
+            <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <a class="btn btn-primary" href="/Admin/Category/Create">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>CreateDate</th>
+                        <th>Status</th>
+                        <th>#</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>CreateDate</th>
+                        <th>Status</th>
+                        <th>#</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row_@item.ID">
+
+                            <td>@item.ID</td>
+                            <td>@item.Name</td>
+                            <td>@(item.CreatedDate.HasValue?  @item.CreatedDate.Value.ToString("dd/MM/yyyy"):"")</td>
+                            <td><a href="#" class="btn-active" data-id="@item.ID">@Html.Raw(item.Status ? "<strong>Kích hoạt</strong>" : "Khoá")</a></td>
+                            <td>
+                                <a href="/Admin/Category/Edit/@item.ID">Sửa</a>|
+                                @Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
+                            {
+                                //Xóa.............
+                                Confirm = "Bạn có muốn xoá bản ghi này?",
+                                OnComplete = "$('#row_" + @item.ID + "').remove()",
+                                HttpMethod = "Delete"
+                            })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

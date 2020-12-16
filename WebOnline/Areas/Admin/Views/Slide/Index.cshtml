@@ -1,0 +1,81 @@
+﻿@model List<Model.EF.Slide>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Quản lý Slide";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section header{
+    Quản lý danh sách sản phẩm
+}
+@section jsFooter{
+    <script src="~/Assets/admin/js/controller/slideContronller.js"></script>
+}
+<h1 class="h3 mb-0 text-gray-800 " style="margin-left: 20px;">Tables</h1>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách slide</h6>
+    </div>
+    <div class="card-body">
+        <!--Search...........-->
+        @using (Html.BeginForm("Index", "Slide", FormMethod.Get))
+        {
+            <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <a class="btn btn-primary" href="/Admin/Slide/Create">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ảnh</th>
+                        <th>Thứ tự</th>
+                        <th>Thêm bởi</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th>#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row_@item.ID">
+                            <td>@item.ID</td>
+                            <td><a><img src="@item.Image" alt="" style=" width: 100px; height: 100px;" /></a></td>
+                            <td>@item.DisplayOther</td>
+                            <td>@item.CreatedBy</td>
+                            <td>@item.CreatedDate</td>
+                            <td><a href="#" class="btn-active" data-id="@item.ID">@Html.Raw(item.Status ? "<strong>Kích hoạt</strong>" : "Khoá")</a></td>
+                            <td>
+                                <a href="/Admin/Slide/Edit/@item.ID">Sửa</a>|
+                                @Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
+                            {
+                                //Xóa.............
+                                Confirm = "Bạn có muốn xoá bản ghi này?",
+                                OnComplete = "$('#row_" + @item.ID + "').remove()",
+                                HttpMethod = "Delete"
+                            })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ảnh</th>
+                        <th>Thứ tự</th>
+                        <th>Thêm bởi</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th>#</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

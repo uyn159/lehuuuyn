@@ -1,0 +1,91 @@
+﻿@model PagedList.IPagedList<Model.EF.ProductCategory>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Quản lý danh sách sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@section header{
+    Quản lý danh sách sản phẩm
+}
+@section jsFooter{
+    <script src="~/Assets/admin/js/controller/productcategoryController.js"></script><!--nhúng vào file index-->
+}
+<h1 class="h3 mb-0 text-gray-800 " style="margin-left: 20px;">Tables</h1>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách người dùng</h6>
+    </div>
+    <div class="card-body">
+        <!--Search...........-->
+        @using (Html.BeginForm("Index", "ProductCategory", FormMethod.Get))
+        {
+            <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                <div class="input-group">
+                    <input type="text" value="@ViewBag.SearchString" name="searchString" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                        <a class="btn btn-primary" href="/Admin/ProductCategory/Create">Thêm mới</a>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>ParenID</th>
+                        <th>Thứ tự</th>
+                        <th>Thêm bởi</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th>#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row_@item.ID">
+                            <td>@item.ID</td>
+                            <td>@item.Name</td>
+                            <td>@item.ParenID</td>
+                            <td>@item.DisplayOrder</td>
+                            <td>@item.CreatedBy</td>
+                            <td>@item.CreatedDate</td>
+                            <td><a href="#" class="btn-active" data-id="@item.ID">@Html.Raw(item.Status ? "<strong>Kích hoạt</strong>" : "Khoá")</a></td>
+                            <td>
+                                <a href="/Admin/ProductCategory/Edit/@item.ID">Sửa</a>|
+                                @Ajax.ActionLink("Xoá", "Delete", new { @id = item.ID }, new AjaxOptions
+                            {
+                                //Xóa.............
+                                Confirm = "Bạn có muốn xoá bản ghi này?",
+                                OnComplete = "$('#row_" + @item.ID + "').remove()",
+                                HttpMethod = "Delete"
+                            })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>ParenID</th>
+                        <th>Thứ tự</th>
+                        <th>Thêm bởi</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th>#</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="pagination">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, @ViewBag.SearchString }))
+            </div>
+        </div>
+    </div>
+</div>

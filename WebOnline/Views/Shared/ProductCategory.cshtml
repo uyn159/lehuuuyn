@@ -1,0 +1,23 @@
+﻿@model List<Model.EF.ProductCategory>
+<!--//phần tạo đa cấp cho danh sách sảng phẩm--->
+<ul>
+    <h3>Danh mục sản phẩm</h3>
+    @foreach (var item in Model.Where(x => x.ParenID == null))// phần mở rộng của danh mục sả phẩm gọi từ home  
+    {
+        var child = Model.Where(x => x.ParenID == item.ID);// thằng con có parenid bằng với id của danh mục
+        var parentClass = child.Count() > 0 ? "class=dropdown-toggle data-toggle=dropdown" : "";//Count> mới sổ ra class nếu không thì sẽ rổng
+        <li class="dropdown">
+            <a href="/san-pham/@item.MetaTitle-@item.ID" @parentClass>@item.Name</a>
+            @if (child.Count() > 0)
+            {
+                <ul class="dropdown-menu">
+                    @foreach (var childItem in child)
+                    {
+                        <li><a href="/san-pham/@childItem.MetaTitle-@childItem.ID">@childItem.Name</a></li>
+                    }
+                </ul>
+            }
+
+        </li>
+    }
+</ul>
